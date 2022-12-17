@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { authService } from "../../fbase";
 import Swal from "sweetalert2";
+import classes from "./DbSetting.module.css";
 
 const Form = (props) => {
   const [isTeacher, setIsTeacher] = useState("");
@@ -95,13 +96,22 @@ const Form = (props) => {
 
       {isTeacher === "from-indi" && (
         <form>
-          <button name="google" onClick={onSocialClick}>
+          <button
+            className={classes["capsule-btn"]}
+            name="google"
+            onClick={onSocialClick}
+          >
             Google 로그인
           </button>
         </form>
       )}
 
-      <button onClick={() => props.loginTypeHandler()}>뒤로</button>
+      <button
+        className={classes["capsule-btn"]}
+        onClick={() => props.loginTypeHandler()}
+      >
+        뒤로
+      </button>
     </div>
   );
 };

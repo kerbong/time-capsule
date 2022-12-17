@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "./Form";
-import Students from "./Students";
+import AccessRoom from "./AccessRoom";
+import classes from "./DbSetting.module.css";
 
 const Login = (props) => {
   const [loginType, setLoginType] = useState("");
@@ -9,12 +10,22 @@ const Login = (props) => {
       {loginType === "" && (
         <div>
           <div className="title-div">
-            <p>⏲🔮 타 임 캡 슐 💊✨</p>
-            <p>로그인 방식을 선택하세요.</p>
+            <h2>🔮 타 임 캡 슐 💊</h2>
+            <h3>로그인 방식을 선택하세요.</h3>
           </div>
-          <div>
-            <button onClick={() => setLoginType("teacher")}>교사</button>
-            <button onClick={() => setLoginType("student")}>학생</button>
+          <div className={classes["roomDate-div"]}>
+            <button
+              className={classes["capsule-btn"]}
+              onClick={() => setLoginType("teacher")}
+            >
+              교사
+            </button>
+            <button
+              className={classes["capsule-btn"]}
+              onClick={() => setLoginType("student")}
+            >
+              학생
+            </button>
           </div>
         </div>
       )}
@@ -31,7 +42,9 @@ const Login = (props) => {
       )}
       {/* 학생 버튼 클릭시 보여줄 화면 */}
 
-      {loginType === "student" && <Students />}
+      {loginType === "student" && (
+        <AccessRoom capsuleNames={props.capsuleNames} />
+      )}
     </div>
   );
 };

@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/time-capsule/static/css/main.104a1be2.css",
+    "main.js": "/time-capsule/static/js/main.9ba48e04.js",
+    "index.html": "/time-capsule/index.html",
+    "main.104a1be2.css.map": "/time-capsule/static/css/main.104a1be2.css.map",
+    "main.9ba48e04.js.map": "/time-capsule/static/js/main.9ba48e04.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.104a1be2.css",
+    "static/js/main.9ba48e04.js"
+  ]
+}

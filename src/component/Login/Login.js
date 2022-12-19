@@ -14,6 +14,7 @@ const Login = (props) => {
             <h3>로그인 방식을 선택하세요.</h3>
           </div>
           <div className={classes["roomDate-div"]}>
+            <h1>📦</h1>
             <button
               className={classes["capsule-btn"]}
               onClick={() => setLoginType("teacher")}
@@ -43,7 +44,10 @@ const Login = (props) => {
       {/* 학생 버튼 클릭시 보여줄 화면 */}
 
       {loginType === "student" && (
-        <AccessRoom capsuleNames={props.capsuleNames} />
+        <AccessRoom
+          capsuleNames={props.capsuleNames}
+          loginTypeHandler={() => setLoginType("")}
+        />
       )}
     </div>
   );

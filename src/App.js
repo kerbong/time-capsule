@@ -45,15 +45,10 @@ function App() {
   // 데이터베이스에서 방이름들만 받아오기
   const findLabelPossible = async () => {
     const new_capsuleNames = [];
-    const new_myCapsule = [];
     const querySnapshot = await getDocs(collection(dbService, "capsule"));
     querySnapshot.forEach((doc) => {
       new_capsuleNames.push(doc.id);
-      if (doc.data().writtenId === userUid) {
-        new_myCapsule.push(doc.id);
-      }
     });
-    setMyCapsule([...new_myCapsule]);
     setCapsuleNames([...new_capsuleNames]);
   };
 
@@ -63,8 +58,6 @@ function App() {
   }, []);
 
   const saveCapsule = async (roomName, data) => {
-    console.log(roomName);
-    console.log(data);
     await setDoc(doc(dbService, "capsule", roomName), data);
   };
 
@@ -77,8 +70,6 @@ function App() {
             index
             element={
               <DbSetting
-                capsuleNames={capsuleNames}
-                myCapsule={myCapsule}
                 userUid={userUid}
                 // userEmail={userEmail}
                 logOutHandler={() => {

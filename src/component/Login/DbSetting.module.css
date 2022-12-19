@@ -22,7 +22,7 @@
   border-width: 0;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
     rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  width: 100%;
+  width: 90%;
 }
 .room-input {
   padding: 20px;
@@ -50,7 +50,9 @@
   display: none;
 }
 
-.logout-btn {
+.logout-btn,
+.showExpl-btn,
+.showRoom-btn {
   color: whitesmoke;
   padding: 5px;
   font-size: 0.7rem;
@@ -61,7 +63,18 @@
     rgb(0 0 0 / 30%) 0px 1px 3px -1px;
   top: 10px;
   position: absolute;
+}
+
+.logout-btn {
   right: 10px;
+}
+
+.showExpl-btn {
+  left: 10px;
+}
+
+.showRoom-btn {
+  left: 80px;
 }
 
 .students-ul {
@@ -74,5 +87,22 @@
 
 .students-li {
   list-style: none;
+  margin: 5px;
+}
+
+.teacher-check {
+  padding: 20px;
+  font-size: 1.3rem;
+  margin: 20px;
+}
+
+.exp-li {
+  list-style: none;
+  margin: 10px;
+  font-size: 1.2rem;
+  padding: 5px;
+}
+
+.student-span {
   margin: 5px;
 }

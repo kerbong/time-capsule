@@ -87,9 +87,14 @@ const Form = (props) => {
     <div>
       {isTeacher === "" && (
         <>
-          <h3>교사인증 비밀번호</h3>
+          <h2>교사인증 비밀번호</h2>
           <form onSubmit={isTeacherChecker}>
-            <input type={"password"} ref={teacherCheckRef} autoFocus></input>
+            <input
+              type={"password"}
+              ref={teacherCheckRef}
+              autoFocus
+              className={classes["teacher-check"]}
+            ></input>
           </form>
         </>
       )}

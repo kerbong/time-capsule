@@ -4,15 +4,19 @@ import { read, utils } from "xlsx";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import classes from "./DbSetting.module.css";
+import Modal from "../Layout/Modal";
+import { collection, onSnapshot } from "firebase/firestore";
+import { dbService } from "../../fbase";
+import ExistRoom from "./ExistRoom";
 
 const EXPLAIN = [
-  "방이름은 문자 혹은 숫자로 구성이 가능합니다. 예) 2022가나초3반",
-  "방이름은 추후 학생들이 접속할 때 필요합니다.",
-  "방이름은 저장 후에 수정이 불가능합니다.",
-  "엑셀에 업로드 된 학생이름+비밀번호 로만 글 작성이 가능합니다.",
-  "엑셀파일의 시트는 하나만 사용해주세요.",
-  "왼쪽 상단의 버튼을 클릭해서 기존의 방에 접속하실 수 있습니다.",
-  "학생 명단이 있는 엑셀을 업로드하시면 저장버튼이 보입니다.",
+  "😄 방이름은 문자 혹은 숫자로 구성이 가능합니다. 예) 2022가나초3반",
+  "😄 방이름은 추후 학생들이 접속할 때 필요합니다.",
+  "😄 방이름, 캡슐이 열리는 날짜는 저장 후에 수정이 불가능합니다.",
+  "😄 엑셀에 업로드 된 '학생이름+비밀번호' 로만 글 작성이 가능합니다!(선생님자료도 추가가능)",
+  "😄 엑셀파일의 시트는 하나만 사용해주세요.",
+  "😄 왼쪽 상단의 버튼을 클릭해서 기존의 방에 접속하실 수 있습니다.",
+  "😄 엑셀파일을 업로드하시면 저장버튼이 보입니다.",
 ];
 
 const DbSetting = (props) => {
@@ -23,6 +27,10 @@ const DbSetting = (props) => {
   const [showCal2, setShowCal2] = useState(false);
   const [capsule1Open, setCapsule1Open] = useState("");
   const [capsule2Open, setCapsule2Open] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [capsuleNames, setCapsuleNames] = useState(false);
+  const [myCapsule, setMyCapsule] = useState(false);
+  const [showRoom, setShowRoom] = useState(false);
 
   const roomNameInput = useRef();
   // const excelInput = useRef();
@@ -41,6 +49,28 @@ const DbSetting = (props) => {
   useEffect(() => {
     setCapsule2Open(yyyyMmDd(value2));
   }, [value2]);
+
+  //캡슐 방 정보들 가져와서 저장하기
+  const getCapsules = () => {
+    onSnapshot(collection(dbService, "capsule"), (snapshot) => {
+      const new_capsuleNames = [];
+      const new_myCapsule = [];
+
+      snapshot.docs.forEach((doc) => {
+        new_capsuleNames.push(doc.id);
+        if (doc.data().writtenId === props.userUid) {
+          new_myCapsule.push({ ...doc.data(), doc_id: doc.id });
+        }
+      });
+      //위치가 중요. 스냅샷 안에서 해야함!!
+      setCapsuleNames([...new_capsuleNames]);
+      setMyCapsule([...new_myCapsule]);
+    });
+  };
+
+  useEffect(() => {
+    getCapsules();
+  }, []);
 
   //특수문자 입력방지 함수
   const characterCheck = (obj) => {
@@ -117,18 +147,20 @@ const DbSetting = (props) => {
 
   //저장함수
   const saveHandler = () => {
+    console.log(myCapsule);
     //타임캡슐 개봉날짜 확인하기, 불가능하면
     if (!openDateCheck()) {
       return;
     }
     //방이름 중복확인
     const roomName = roomNameInput.current.value;
-    if (props.capsuleNames?.includes(roomName)) {
+    console.log(capsuleNames.filter((name) => name === roomName));
+    if (capsuleNames?.includes(roomName)) {
       errorSwal(
         "방이름 중복",
         "이미 존재하는 방 이름입니다. 다른 이름으로 설정해주세요!"
       );
-      return;
+      return false;
     }
 
     if (roomName === "") {
@@ -137,7 +169,7 @@ const DbSetting = (props) => {
     }
 
     //유저는 하루 2개만 저장가능 확인 함수
-    const savedToday = props.myCapsule?.filter(
+    const savedToday = myCapsule?.filter(
       (cap) => cap.writtenDate === yyyyMmDd(new Date())
     )?.length;
     //오늘 저장한 개수가 이미 2개면 저장불가
@@ -163,7 +195,8 @@ const DbSetting = (props) => {
 
     Swal.fire({
       icon: "success",
-      title: "저장완료",
+      title: `${roomName}`,
+      text: `타임캡슐1 '${capsule1Open}' 오픈 | 타임캡슐2 '${capsule2Open}' 오픈 되는 방이 만들어졌어요!`,
       showConfirmButton: true,
       timer: 5000,
     });
@@ -174,126 +207,191 @@ const DbSetting = (props) => {
     setCapsule2Open("");
   };
 
+  //로그아웃 핸들러
+  const logOutHandler = () => {
+    Swal.fire({
+      icon: "question",
+      title: `로그아웃 할까요?`,
+      showConfirmButton: true,
+      showDenyButton: true,
+      confirmButtonText: "확인",
+      denyButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 로그아웃하기
+        props.logOutHandler();
+      }
+    });
+  };
+
   return (
     <>
-      <button
-        className={classes["logout-btn"]}
-        onClick={() => props.logOutHandler()}
-      >
-        로그아웃
-      </button>
-      <div className={classes["roomDate-div"]}>
-        <input
-          className={classes["room-input"]}
-          type="text"
-          ref={roomNameInput}
-          placeholder="접속할 때 사용할 방이름"
-          onKeyDown={() => characterCheck(roomNameInput)}
-          onKeyUp={() => characterCheck(roomNameInput)}
-          maxLength={"20"}
-          autoFocus={true}
-        />
-        <button
-          className={classes["capsule-btn"]}
-          onClick={() => setShowCal1((prev) => !prev)}
+      {/* 설명 모달 */}
+      {showModal && (
+        <Modal
+          onClose={() => {
+            setShowModal(false);
+          }}
         >
-          1번 타임캡슐 📦 개봉날짜
-        </button>
-        {!showCal1 ? capsule1Open : "날짜를 선택하세요."}
-        {showCal1 && (
-          <Calendar
-            onChange={(val) => {
-              onChange1(val);
-              setShowCal1(false);
-            }}
-            value={value1}
-            formatDay={(locale, date) =>
-              date.toLocaleString("en", { day: "numeric" })
-            }
-          />
-        )}
-        <button
-          className={classes["capsule-btn"]}
-          onClick={() => setShowCal2((prev) => !prev)}
-        >
-          2번 타임캡슐 💊 개봉날짜
-        </button>
-        {!showCal2 ? capsule2Open : "날짜를 선택하세요."}
-        {showCal2 && (
-          <Calendar
-            onChange={(val) => {
-              onChange2(val);
-              setShowCal2(false);
-            }}
-            value={value2}
-            formatDay={(locale, date) =>
-              date.toLocaleString("en", { day: "numeric" })
-            }
-          />
-        )}
-      </div>
-      <div className={classes["excel-div"]}>
-        {studentsInfo.length === 0 ? (
-          <>
-            <button className={classes["capsule-btn"]}>
-              <a href="https://drive.google.com/uc?export=download&id=1d4I3NmUx3PsmiRfujNOfMAzkZxNDSkLH">
-                양식 다운
-              </a>
-            </button>
-
-            <button className={classes["capsule-btn"]}>
-              <label htmlFor="excelFileInput">엑셀 업로드</label>
-            </button>
-            <input
-              className={classes["excel-input"]}
-              type="file"
-              id="excelFileInput"
-              onChange={(e) => {
-                excelFileHandler(e);
-              }}
-              accept={".xls,.xlsx"}
-            />
-          </>
-        ) : (
-          <>
-            <button
-              className={classes["capsule-btn"]}
-              onClick={() => {
-                setStudentsInfo([]);
-              }}
-            >
-              학생정보 초기화
-            </button>
-          </>
-        )}
-      </div>
-      {studentsInfo.length > 0 && (
-        <>
-          <h2>학생 접속정보</h2>
-          <hr />
-          <ul className={classes["students-ul"]}>
-            {studentsInfo?.map((stu) => (
-              <li key={stu} className={classes["students-li"]}>
-                {stu}
+          <div>
+            {EXPLAIN.map((exp, index) => (
+              <li className={classes["exp-li"]} key={"exp" + index}>
+                {exp}
               </li>
             ))}
-          </ul>
-          <hr />
-        </>
+          </div>
+        </Modal>
       )}
 
-      <div className={classes["excel-div"]}>
-        {studentsInfo?.length > 0 && (
-          <button
-            className={classes["capsule-btn"]}
-            onClick={() => {
-              saveHandler();
-            }}
-          >
-            저 장
-          </button>
-        )}
+      {/* 상단 버튼 모음 */}
+      <div>
+        <button
+          className={classes["showRoom-btn"]}
+          onClick={() => setShowRoom((prev) => !prev)}
+        >
+          {showRoom ? "새방만들기" : "기존방보기"}
+        </button>
+        <button
+          className={classes["showExpl-btn"]}
+          onClick={() => setShowModal(true)}
+        >
+          설명보기
+        </button>
+        <button className={classes["logout-btn"]} onClick={logOutHandler}>
+          로그아웃
+        </button>
       </div>
+
+      {/* 기존방보기면? 새방만들기면? */}
+      {showRoom ? (
+        <>
+          <ExistRoom myCapsule={myCapsule} />
+        </>
+      ) : (
+        <>
+          {/* 방 정보(방이름, 캡슐 개봉날짜) */}
+          <div className={classes["roomDate-div"]}>
+            <input
+              className={classes["room-input"]}
+              type="text"
+              ref={roomNameInput}
+              placeholder="접속할 때 사용할 방이름"
+              onKeyDown={() => characterCheck(roomNameInput)}
+              onKeyUp={() => characterCheck(roomNameInput)}
+              maxLength={"20"}
+              autoFocus={true}
+            />
+
+            {/* 1번 타임캡슐 */}
+            <button
+              className={classes["capsule-btn"]}
+              onClick={() => setShowCal1((prev) => !prev)}
+            >
+              1번 타임캡슐 📦 개봉날짜
+            </button>
+            <h3>{!showCal1 ? capsule1Open : "날짜를 선택하세요."}</h3>
+            {showCal1 && (
+              <Calendar
+                onChange={(val) => {
+                  onChange1(val);
+                  setShowCal1(false);
+                }}
+                value={value1}
+                formatDay={(locale, date) =>
+                  date.toLocaleString("en", { day: "numeric" })
+                }
+              />
+            )}
+
+            {/* 2번 타임캡슐 */}
+            <button
+              className={classes["capsule-btn"]}
+              onClick={() => setShowCal2((prev) => !prev)}
+            >
+              2번 타임캡슐 💊 개봉날짜
+            </button>
+            <h3>{!showCal2 ? capsule2Open : "날짜를 선택하세요."}</h3>
+            {showCal2 && (
+              <Calendar
+                onChange={(val) => {
+                  onChange2(val);
+                  setShowCal2(false);
+                }}
+                value={value2}
+                formatDay={(locale, date) =>
+                  date.toLocaleString("en", { day: "numeric" })
+                }
+              />
+            )}
+          </div>
+
+          {/* 엑셀 양식 및 학생정보 부분 */}
+          <div className={classes["excel-div"]}>
+            {studentsInfo.length === 0 ? (
+              <>
+                <button className={classes["capsule-btn"]}>
+                  <a href="https://drive.google.com/uc?export=download&id=1d4I3NmUx3PsmiRfujNOfMAzkZxNDSkLH">
+                    양식 다운
+                  </a>
+                </button>
+
+                <button className={classes["capsule-btn"]}>
+                  <label htmlFor="excelFileInput">엑셀 업로드</label>
+                </button>
+                <input
+                  className={classes["excel-input"]}
+                  type="file"
+                  id="excelFileInput"
+                  onChange={(e) => {
+                    excelFileHandler(e);
+                  }}
+                  accept={".xls,.xlsx"}
+                />
+              </>
+            ) : (
+              <>
+                <button
+                  className={classes["capsule-btn"]}
+                  onClick={() => {
+                    setStudentsInfo([]);
+                  }}
+                >
+                  학생정보 초기화
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* 업로드된 학생정보 보여주기 */}
+          {studentsInfo.length > 0 && (
+            <>
+              <h2>학생 접속정보</h2>
+              <hr />
+              <ul className={classes["students-ul"]}>
+                {studentsInfo?.map((stu) => (
+                  <li key={stu} className={classes["students-li"]}>
+                    {stu}
+                  </li>
+                ))}
+              </ul>
+              <hr />
+            </>
+          )}
+
+          <div className={classes["excel-div"]}>
+            {studentsInfo?.length > 0 && (
+              <button
+                className={classes["capsule-btn"]}
+                onClick={() => {
+                  saveHandler();
+                }}
+              >
+                저 장
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };

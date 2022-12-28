@@ -23,13 +23,6 @@ const AccessRoom = (props) => {
     if (props.capsuleNames?.includes(roomName)) {
       onSnapshot(doc(dbService, "capsule", roomName), (doc) => {
         if (doc.data().studentsInfo?.includes(namePw)) {
-          Swal.fire({
-            icon: "success",
-            title: "접속완료",
-            text: `해당 방에 '${namePw}'로 접속했습니다!`,
-            showConfirmButton: true,
-            timer: 5000,
-          });
           setUserNamePw(namePw);
           setRoomData({ ...doc.data() });
           setRoom(roomName);
@@ -40,6 +33,13 @@ const AccessRoom = (props) => {
             text: "이름과 비번이 틀렸어요! 다시 확인해주세요!",
           });
         }
+      });
+      Swal.fire({
+        icon: "success",
+        title: "접속완료",
+        text: `해당 방에 '${namePw}'로 접속했습니다!`,
+        showConfirmButton: true,
+        timer: 5000,
       });
     }
   };

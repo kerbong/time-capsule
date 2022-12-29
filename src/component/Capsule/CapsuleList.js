@@ -12,18 +12,16 @@ const CapsuleList = (props) => {
   const [onDateCap1, setOnDateCap1] = useState(false);
   const [onDateCap2, setOnDateCap2] = useState(false);
   const [letterExist, setLetterExist] = useState({});
-  // const [roomData, setRoomData] = useState({});
+  const [roomData, setRoomData] = useState({});
 
-  // useEffect(() => {
-  //   setRoomData(props.roomData);
-  // }, [props.roomData]);
-
-  let roomData = props.roomData;
+  useEffect(() => {
+    setRoomData({ ...props.roomData });
+  }, [props.roomData]);
 
   useEffect(() => {
     let new_letterExist = {};
     const checkExistLetter = (data, capsule) => {
-      data.messages?.forEach((mess) => {
+      data?.messages?.forEach((mess) => {
         if (mess.writtenId === props.userId) {
           if (mess.public) {
             new_letterExist[`${capsule}public`] = true;
@@ -33,11 +31,11 @@ const CapsuleList = (props) => {
         }
       });
     };
-    checkExistLetter(roomData.firstCapsule, "capsule1");
-    checkExistLetter(roomData.secondCapsule, "capsule2");
-    console.log(new_letterExist);
+    checkExistLetter(roomData?.firstCapsule, "capsule1");
+    checkExistLetter(roomData?.secondCapsule, "capsule2");
+    // console.log(new_letterExist);
     setLetterExist({ ...new_letterExist });
-  }, []);
+  }, [roomData]);
 
   //남은시간 계산해주는 함수
   const returnGapTime = (toData) => {
@@ -66,7 +64,7 @@ const CapsuleList = (props) => {
       showRemainTime(gap2, "capsule2");
     } else {
       if (onDateCap2 === false) {
-        console.log("열렸어요!");
+        // console.log("열렸어요!");
         setOnDateCap2(true);
       }
     }

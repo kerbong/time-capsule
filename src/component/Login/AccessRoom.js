@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./DbSetting.module.css";
 import { updateDoc, onSnapshot, doc } from "firebase/firestore";
 import { dbService } from "../../fbase";
@@ -10,18 +10,17 @@ const AccessRoom = (props) => {
   const [roomData, setRoomData] = useState({});
   const [userNamePw, setUserNamePw] = useState("");
   const [room, setRoom] = useState("");
+  const [roomName, setRoomName] = useState("");
+  const [namePw, setNamePw] = useState("");
 
   const roomNameInput = useRef();
   const namePwInput = useRef();
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    const roomName = roomNameInput.current.value;
-    const namePw = namePwInput.current.value;
+  const getRoomDb = () => {
     //방이 존재하고 내아이디가 있으면, 방정보 불러와서 저장해두기
     if (props.capsuleNames?.includes(roomName)) {
       onSnapshot(doc(dbService, "capsule", roomName), (doc) => {
+        // setRoomData({})
         if (doc.data().studentsInfo?.includes(namePw)) {
           setUserNamePw(namePw);
           setRoomData({ ...doc.data() });
@@ -44,6 +43,17 @@ const AccessRoom = (props) => {
     }
   };
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    setRoomName(roomNameInput.current.value);
+    setNamePw(namePwInput.current.value);
+  };
+
+  useEffect(() => {
+    getRoomDb();
+  }, [namePw, roomName]);
+
   const saveLetter = async (filed, text, pubOrPerson) => {
     const data = {
       text: text,
@@ -51,8 +61,8 @@ const AccessRoom = (props) => {
       writtenId: userNamePw,
     };
     const letterRef = doc(dbService, "capsule", room);
-    console.log(filed, text, pubOrPerson);
-    console.log(data);
+    // console.log(filed, text, pubOrPerson);
+    // console.log(data);
     if (filed === "capsule1") {
       const new_messages = [...roomData.firstCapsule?.messages, data];
       await updateDoc(letterRef, {
@@ -77,6 +87,8 @@ const AccessRoom = (props) => {
     setRoomData({});
     setUserNamePw("");
     setRoom("");
+    setRoomName("");
+    setNamePw("");
   };
 
   return (

@@ -13,7 +13,7 @@ const CapsuleItem = (props) => {
     if (props.letterExist[`${props.capsuleId}personal`]) {
       setExistPersonal(true);
     }
-  }, []);
+  }, [props.letterExist]);
 
   const writeLetter = (pubOrPerson) => {
     Swal.fire({
@@ -28,6 +28,15 @@ const CapsuleItem = (props) => {
       confirmButtonText: "저장",
     }).then((result) => {
       if (result.isConfirmed) {
+        if (result.value.trim() === "") {
+          Swal.fire({
+            icon: "error",
+            title: "저장불가",
+            text: "빈 내용을 저장할 수 없어요. 내용을 확인해주세요!",
+          });
+          return;
+        }
+
         // console.log(result.value);
         props.saveLetter(props.capsuleId, result.value, pubOrPerson);
         if (pubOrPerson === "public") {

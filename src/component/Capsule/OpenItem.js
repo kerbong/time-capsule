@@ -14,7 +14,14 @@ const OpenItem = (props) => {
     let isPublic = pubOrPerson === "public" ? true : false;
     props?.letters?.forEach((letter) => {
       if (letter.public === isPublic) {
-        letters.push(letter);
+        //개인용의 경우에는 내것만 보여주기
+        if (!isPublic) {
+          if (letter.writtenId === props.userId) {
+            letters.push(letter);
+          }
+        } else {
+          letters.push(letter);
+        }
       }
     });
 

@@ -135,6 +135,7 @@ const CapsuleList = (props) => {
             <>
               <OpenItem
                 name={"캡슐1"}
+                userId={props.userId}
                 capsuleId={"capsule1"}
                 letters={roomData?.firstCapsule?.messages}
               />
@@ -170,6 +171,7 @@ const CapsuleList = (props) => {
             <>
               <OpenItem
                 name={"캡슐2"}
+                userId={props.userId}
                 capsuleId={"capsule2"}
                 letters={roomData?.secondCapsule?.messages}
               />

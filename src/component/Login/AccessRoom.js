@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./DbSetting.module.css";
-import { updateDoc, onSnapshot, doc } from "firebase/firestore";
+import { updateDoc, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import Swal from "sweetalert2";
 import CapsuleList from "../Capsule/CapsuleList";
@@ -63,8 +63,12 @@ const AccessRoom = (props) => {
     const letterRef = doc(dbService, "capsule", room);
     // console.log(filed, text, pubOrPerson);
     // console.log(data);
+    //최신 정보 받아와서 저장하기..
+
+    const ex_doc = await getDoc(letterRef);
     if (filed === "capsule1") {
-      const new_messages = [...roomData.firstCapsule?.messages, data];
+      const new_messages = [...ex_doc?.data()?.firstCapsule?.messages];
+      new_messages.push(data);
       await updateDoc(letterRef, {
         firstCapsule: {
           date: roomData.firstCapsule.date,
@@ -73,7 +77,8 @@ const AccessRoom = (props) => {
       });
     }
     if (filed === "capsule2") {
-      const new_messages = [...roomData.secondCapsule?.messages, data];
+      const new_messages = [...ex_doc?.data()?.secondCapsule?.messages];
+      new_messages.push(data);
       await updateDoc(letterRef, {
         secondCapsule: {
           date: roomData.secondCapsule.date,
@@ -132,6 +137,7 @@ const AccessRoom = (props) => {
             saveLetter={(filed, text, pubOrPerson) => {
               saveLetter(filed, text, pubOrPerson);
             }}
+            roomName={roomName}
             logOutHandler={logOutHandler}
           />
           {/* <RollingPaper roomData={roomData} /> */}

@@ -17,7 +17,10 @@ const CapsuleItem = (props) => {
 
   const writeLetter = (pubOrPerson) => {
     Swal.fire({
-      title: "편지 내용을 작성해주세요.",
+      title:
+        pubOrPerson === "public"
+          ? "우리반 모두에게 보내는 편지"
+          : "나에게 보내는 편지",
       input: "textarea",
       inputAttributes: {
         autocapitalize: "off",

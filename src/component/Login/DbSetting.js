@@ -89,7 +89,7 @@ const DbSetting = (props) => {
 
   //엑셀파일 업로드 함수
   const excelFileHandler = (e) => {
-    let input = e.target;
+    let input = e;
     if (input.files[0] !== undefined) {
       let reader = new FileReader();
       reader.onload = function () {
@@ -98,8 +98,19 @@ const DbSetting = (props) => {
           let workBook = read(data, { type: "binary" });
           workBook.SheetNames.forEach(function (sheetName) {
             let rows = utils.sheet_to_json(workBook.Sheets[sheetName]);
+            //비번이 숫자가 아닌경우 취소..!
+            if (rows?.filter((r) => isNaN(+r["비번"]))?.length > 0) {
+              Swal.fire(
+                "업로드 실패",
+                `학생들이 접속할 때 사용할 개인 비번을 숫자로 변경해주세요! `,
+                "warning"
+              );
+              return false;
+            }
+
             // console.log(rows);
             let new_rows = rows.map((row) => row["이름"] + row["비번"]);
+
             setStudentsInfo([...new_rows]);
           });
         } catch (error) {
@@ -147,14 +158,13 @@ const DbSetting = (props) => {
 
   //저장함수
   const saveHandler = () => {
-    console.log(myCapsule);
     //타임캡슐 개봉날짜 확인하기, 불가능하면
     if (!openDateCheck()) {
       return;
     }
     //방이름 중복확인
     const roomName = roomNameInput.current.value;
-    console.log(capsuleNames.filter((name) => name === roomName));
+
     if (capsuleNames?.includes(roomName)) {
       errorSwal(
         "방이름 중복",
@@ -335,18 +345,27 @@ const DbSetting = (props) => {
                   </a>
                 </button>
 
-                <button className={classes["capsule-btn"]}>
-                  <label htmlFor="excelFileInput">엑셀 업로드</label>
+                <button
+                  className={classes["capsule-btn"]}
+                  // onClick={(e) => excelFileHandler(e.target.lastChild)}
+                  style={{ padding: "0" }}
+                >
+                  <label
+                    htmlFor="excelFileInput"
+                    className={classes["input-label"]}
+                  >
+                    엑셀 업로드
+                  </label>
+                  <input
+                    className={classes["excel-input"]}
+                    type="file"
+                    id="excelFileInput"
+                    onChange={(e) => {
+                      excelFileHandler(e.target);
+                    }}
+                    accept={".xls,.xlsx"}
+                  />
                 </button>
-                <input
-                  className={classes["excel-input"]}
-                  type="file"
-                  id="excelFileInput"
-                  onChange={(e) => {
-                    excelFileHandler(e);
-                  }}
-                  accept={".xls,.xlsx"}
-                />
               </>
             ) : (
               <>

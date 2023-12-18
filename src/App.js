@@ -2,7 +2,13 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAuth, signOut } from "firebase/auth";
-import { getDocs, collection, setDoc, doc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  setDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 import { authService, dbService } from "./fbase";
 import Login from "./component/Login/Login";
 import DbSetting from "./component/Login/DbSetting";
@@ -45,11 +51,14 @@ function App() {
   // 데이터베이스에서 방이름들만 받아오기
   const findLabelPossible = async () => {
     const new_capsuleNames = [];
-    const querySnapshot = await getDocs(collection(dbService, "capsule"));
-    querySnapshot.forEach((doc) => {
-      new_capsuleNames.push(doc.id);
+    const queryRef = doc(dbService, "capsule", "roomNames");
+    onSnapshot(queryRef, (doc) => {
+      doc?.data()?.datas.forEach((data) => {
+        new_capsuleNames.push(data);
+      });
+
+      setCapsuleNames([...new_capsuleNames]);
     });
-    setCapsuleNames([...new_capsuleNames]);
   };
 
   useEffect(() => {
@@ -59,6 +68,13 @@ function App() {
 
   const saveCapsule = async (roomName, data) => {
     await setDoc(doc(dbService, "capsule", roomName), data);
+    //이름목록에도 저장해주기
+    let new_capsuleNames = [...capsuleNames];
+
+    new_capsuleNames.push(roomName);
+    await setDoc(doc(dbService, "capsule", "roomNames"), {
+      datas: new_capsuleNames,
+    });
   };
 
   return (

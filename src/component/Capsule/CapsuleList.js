@@ -101,11 +101,32 @@ const CapsuleList = (props) => {
     });
   };
 
+  function splitString(string) {
+    let characters = "";
+
+    for (let i = 0; i < string.length; i++) {
+      let char = string[i];
+      if (isNaN(char)) {
+        characters += char;
+      }
+    }
+
+    return characters;
+  }
+
+  // 테스트
+  let string = "정주윤002500";
+  let [characters, numbers] = splitString(string);
+
   return (
     <div>
       <button className={classes["logout-btn"]} onClick={logOutHandler}>
         로그아웃
       </button>
+      {/* 방이름 + 접속한 사람 이름 */}
+      <div className={classes["capsule-title"]}>
+        {props.roomName} ({splitString(props.userId)})
+      </div>
 
       {/* 타임캡슐 1번 */}
       <div>

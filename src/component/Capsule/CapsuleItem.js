@@ -40,13 +40,26 @@ const CapsuleItem = (props) => {
           return;
         }
 
+        Swal.fire({
+          title: "저장할까요?",
+
+          html: "** 저장된 메세지는 <b><u>수정이 불가능</b></u>합니다!! <br/>내용을 다시 읽어보고 신중하게 결정하세요.",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "취소",
+          confirmButtonText: "저장",
+        }).then((res) => {
+          if (res.isConfirmed) {
+            props.saveLetter(props.capsuleId, result.value, pubOrPerson);
+            if (pubOrPerson === "public") {
+              setExistPublic(true);
+            } else {
+              setExistPersonal(true);
+            }
+          }
+        });
+
         // console.log(result.value);
-        props.saveLetter(props.capsuleId, result.value, pubOrPerson);
-        if (pubOrPerson === "public") {
-          setExistPublic(true);
-        } else {
-          setExistPersonal(true);
-        }
       }
     });
   };

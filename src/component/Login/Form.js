@@ -84,23 +84,54 @@ const Form = (props) => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "60vh",
+        justifyContent: "center",
+      }}
+    >
       {isTeacher === "" && (
         <>
           <h2>교사인증 비밀번호</h2>
-          <form onSubmit={isTeacherChecker}>
+          <form
+            onSubmit={isTeacherChecker}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "18px",
+            }}
+          >
             <input
               type={"password"}
               ref={teacherCheckRef}
               autoFocus
               className={classes["teacher-check"]}
             ></input>
+            <button
+              className={classes["capsule-btn"]}
+              type="button"
+              style={{ marginTop: "18px" }}
+              onClick={() => props.loginTypeHandler()}
+            >
+              뒤로
+            </button>
           </form>
         </>
       )}
 
       {isTeacher === "from-indi" && (
-        <form>
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "18px",
+          }}
+        >
           <button
             className={classes["capsule-btn"]}
             name="google"
@@ -108,15 +139,15 @@ const Form = (props) => {
           >
             Google 로그인
           </button>
+          <button
+            className={classes["capsule-btn"]}
+            type="button"
+            onClick={() => props.loginTypeHandler()}
+          >
+            뒤로
+          </button>
         </form>
       )}
-
-      <button
-        className={classes["capsule-btn"]}
-        onClick={() => props.loginTypeHandler()}
-      >
-        뒤로
-      </button>
     </div>
   );
 };

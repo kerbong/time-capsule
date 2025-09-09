@@ -97,10 +97,13 @@ const AccessRoom = (props) => {
   };
 
   return (
-    <div>
+    <div className={classes["access-form-wrap"]}>
       {Object.keys(roomData).length === 0 ? (
         <>
-          <form onSubmit={(e) => submitHandler(e)}>
+          <form
+            className={classes["access-form"]}
+            onSubmit={(e) => submitHandler(e)}
+          >
             <input
               className={classes["room-input"]}
               type="text"
@@ -116,18 +119,24 @@ const AccessRoom = (props) => {
               placeholder="내이름+비번"
               maxLength={"10"}
             />
-            <button className={classes["capsule-btn"]} onClick={submitHandler}>
-              접속
-            </button>
+            <div className={classes["access-btns"]}>
+              <button
+                className={classes["capsule-btn"]}
+                onClick={submitHandler}
+              >
+                접속
+              </button>
+              <button
+                className={classes["capsule-btn"]}
+                type="button"
+                onClick={() => {
+                  props.loginTypeHandler();
+                }}
+              >
+                뒤로
+              </button>
+            </div>
           </form>
-          <button
-            className={classes["capsule-btn"]}
-            onClick={() => {
-              props.loginTypeHandler();
-            }}
-          >
-            뒤로
-          </button>
         </>
       ) : (
         <>

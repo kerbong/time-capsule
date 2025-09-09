@@ -1,9 +1,32 @@
+.access-form-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.access-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.access-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
 .roomDate-div {
   display: flex;
   flex-direction: column;
   margin: 40px 10px;
   align-items: center;
   justify-content: center;
+  gap: 18px;
 }
 
 .excel-div {
@@ -15,16 +38,16 @@
 }
 
 .capsule-btn {
-  padding: 20px;
+  padding: 20px 0;
   font-weight: bold;
   color: #fff;
-  font-size: 1.08rem;
-  margin: 10px 0;
-  border-radius: 8px;
+  font-size: 1.15rem;
+  margin: 0;
+  border-radius: 10px;
   background: #e42478;
   border: none;
   box-shadow: 0 2px 8px rgba(50, 50, 93, 0.1), 0 1.5px 4px rgba(0, 0, 0, 0.08);
-  /* width: 180px; */
+  width: 200px;
   min-width: 120px;
   max-width: 90vw;
   cursor: pointer;
@@ -73,9 +96,18 @@
 }
 
 .room-input {
-  padding: 20px;
-  font-size: 1.2rem;
-  margin: 10px;
+  padding: 18px 0;
+  font-size: 1.15rem;
+  margin: 0 0 0 0;
+  width: 320px;
+  text-align: center;
+  border-radius: 8px;
+  border: 1.5px solid #bbb;
+  outline: none;
+  margin-bottom: 0;
+}
+.room-input:focus {
+  border: 2px solid #e42478;
 }
 
 .excel-label {

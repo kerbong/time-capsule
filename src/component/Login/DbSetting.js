@@ -293,6 +293,7 @@ const DbSetting = (props) => {
             {/* 1번 타임캡슐 */}
             <button
               className={classes["capsule-btn"]}
+              style={{ width: "250px" }}
               onClick={() => setShowCal1((prev) => !prev)}
             >
               1번 타임캡슐 📦 개봉날짜
@@ -314,6 +315,7 @@ const DbSetting = (props) => {
             {/* 2번 타임캡슐 */}
             <button
               className={classes["capsule-btn"]}
+              style={{ width: "250px" }}
               onClick={() => setShowCal2((prev) => !prev)}
             >
               2번 타임캡슐 💊 개봉날짜

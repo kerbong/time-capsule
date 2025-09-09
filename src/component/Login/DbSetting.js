@@ -235,7 +235,7 @@ const DbSetting = (props) => {
   };
 
   return (
-    <>
+    <div className={classes["db-container"]}>
       {/* 설명 모달 */}
       {showModal && (
         <Modal
@@ -243,13 +243,13 @@ const DbSetting = (props) => {
             setShowModal(false);
           }}
         >
-          <div>
+          <ul style={{ padding: 0, margin: 0 }}>
             {EXPLAIN.map((exp, index) => (
               <li className={classes["exp-li"]} key={"exp" + index}>
                 {exp}
               </li>
             ))}
-          </div>
+          </ul>
         </Modal>
       )}
 
@@ -274,9 +274,7 @@ const DbSetting = (props) => {
 
       {/* 기존방보기면? 새방만들기면? */}
       {showRoom ? (
-        <>
-          <ExistRoom myCapsule={myCapsule} />
-        </>
+        <ExistRoom myCapsule={myCapsule} />
       ) : (
         <>
           {/* 방 정보(방이름, 캡슐 개봉날짜) */}
@@ -339,15 +337,20 @@ const DbSetting = (props) => {
           <div className={classes["excel-div"]}>
             {studentsInfo.length === 0 ? (
               <>
-                <button className={classes["capsule-btn"]}>
-                  <a href="https://drive.google.com/uc?export=download&id=1d4I3NmUx3PsmiRfujNOfMAzkZxNDSkLH">
-                    양식 다운
-                  </a>
+                <button
+                  className={classes["capsule-btn"]}
+                  onClick={() => {
+                    window.open(
+                      "https://drive.google.com/uc?export=download&id=1d4I3NmUx3PsmiRfujNOfMAzkZxNDSkLH",
+                      "_blank"
+                    );
+                  }}
+                >
+                  양식 다운
                 </button>
 
                 <button
                   className={classes["capsule-btn"]}
-                  // onClick={(e) => excelFileHandler(e.target.lastChild)}
                   style={{ padding: "0" }}
                 >
                   <label
@@ -368,16 +371,14 @@ const DbSetting = (props) => {
                 </button>
               </>
             ) : (
-              <>
-                <button
-                  className={classes["capsule-btn"]}
-                  onClick={() => {
-                    setStudentsInfo([]);
-                  }}
-                >
-                  학생정보 초기화
-                </button>
-              </>
+              <button
+                className={classes["capsule-btn"]}
+                onClick={() => {
+                  setStudentsInfo([]);
+                }}
+              >
+                학생정보 초기화
+              </button>
             )}
           </div>
 
@@ -411,7 +412,7 @@ const DbSetting = (props) => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 

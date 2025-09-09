@@ -1,5 +1,4 @@
-.roomDate-div,
-.excel-div {
+.roomDate-div {
   display: flex;
   flex-direction: column;
   margin: 40px 10px;
@@ -8,21 +7,63 @@
 }
 
 .excel-div {
+  display: flex;
   flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
 }
 
 .capsule-btn {
-  padding: 25px 15px;
+  padding: 20px;
   font-weight: bold;
-  color: whitesmoke;
-  font-size: 1.2rem;
-  margin: 10px;
-  border-radius: 10px;
-  background-color: #e42478;
-  border-width: 0;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  width: 90%;
+  color: #fff;
+  font-size: 1.08rem;
+  margin: 10px 0;
+  border-radius: 8px;
+  background: #e42478;
+  border: none;
+  box-shadow: 0 2px 8px rgba(50, 50, 93, 0.1), 0 1.5px 4px rgba(0, 0, 0, 0.08);
+  /* width: 180px; */
+  min-width: 120px;
+  max-width: 90vw;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.13s, box-shadow 0.18s;
+  outline: none;
+  display: block;
+}
+
+.capsule-btn:hover,
+.capsule-btn:focus {
+  background: #c81e6e;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px rgba(50, 50, 93, 0.13), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.capsule-btn:active {
+  background: #a81a5a;
+  transform: scale(0.98);
+}
+
+.db-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 32px 12px 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.capsule-btn:hover,
+.capsule-btn:focus {
+  background: linear-gradient(90deg, #c81e6e 60%, #ffb6d5 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px rgba(50, 50, 93, 0.18), 0 2px 8px rgba(0, 0, 0, 0.13);
+}
+
+.capsule-btn:active {
+  background: linear-gradient(90deg, #a81a5a 60%, #ffb6d5 100%);
+  transform: scale(0.98);
 }
 
 .input-label {
@@ -108,6 +149,7 @@
   margin: 10px;
   font-size: 1.2rem;
   padding: 5px;
+  width: 100%;
 }
 
 .student-span {
